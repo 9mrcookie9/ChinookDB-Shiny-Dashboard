@@ -1,0 +1,9 @@
+faicons
+shiny
+shinywidgets
+plotly
+pandas
+ridgeplot
+Jinja2
+kaleido
+ipyleaflet
