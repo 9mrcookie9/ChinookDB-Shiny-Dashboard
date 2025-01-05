@@ -72,6 +72,18 @@ COUNTRY_TOP10_QUERY = """
     LIMIT 5;
 """
 
+TOP_THREE_ALBUMS = """
+    SELECT albums.Title AS AlbumTitle, COUNT(invoice_items.TrackId) AS PurchaseCount
+    FROM albums
+    JOIN tracks ON albums.AlbumId = tracks.AlbumId
+    JOIN invoice_items ON tracks.TrackId = invoice_items.TrackId
+    JOIN invoices ON invoice_items.InvoiceId = invoices.InvoiceId
+    WHERE invoices.BillingCountry = '{country}'
+    GROUP BY albums.AlbumId
+    ORDER BY PurchaseCount DESC
+    LIMIT 3;
+"""
+
 # Funkcja do pobierania danych z bazy danych
 def fetch_data(query):
     with sqlite3.connect(DB_PATH) as conn:
@@ -92,3 +104,5 @@ def sales_genres_data():
 def genre_names_data():
     return fetch_data(GENRE_NAMES_QUERY)
 country_top10_data = fetch_data(COUNTRY_TOP10_QUERY)
+def top_albums_data(country):
+    return fetch_data(TOP_THREE_ALBUMS.format(country=country))

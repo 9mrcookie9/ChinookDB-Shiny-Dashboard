@@ -6,4 +6,8 @@ pandas
 ridgeplot
 Jinja2
 kaleido
-ipyleaflet
+ipyleaflet @ git+https://github.com/jupyter-widgets/ipyleaflet.git@master#subdirectory=python/ipyleaflet
+ipython~=8.31.0
+ipywidgets~=7.7.2
+seaborn~=0.13.2
+shapely~=2.0.6
