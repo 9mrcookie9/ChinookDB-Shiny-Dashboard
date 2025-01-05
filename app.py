@@ -32,6 +32,7 @@ with ui.sidebar(title="Filters"):
                     remove_button=True)
     ui.input_select("country", "Select Country", invoices_data['Country'].unique().tolist(), multiple=True,
                     remove_button=True)
+    ui.input_select("year", "Select Year", [str(year) for year in range(2009, 2014)], multiple=False)
     ui.input_action_button("reset", "Reset filters")
 
 with ui.navset_card_pill(id="tab"):
@@ -100,12 +101,14 @@ with ui.navset_card_pill(id="tab"):
 
                 @render_plotly
                 def plot_time():
-                    fig = px.histogram(
-                        orders_by_month_data,
+                    selected_year = input.year()
+                    filtered_data = orders_by_month_data[orders_by_month_data['MonthYear'].str.endswith(selected_year)]
+                    fig = px.line(
+                        filtered_data,
                         x="MonthYear",
                         y="PurchaseCount",
-                        labels={"MonthYear": "Month-Year", "PurchaseCount": "purchase"},
-                        text_auto=False,
+                        labels={"MonthYear": "Month-Year", "PurchaseCount": "Sum of purchases"},
+                        markers=False,
 
                     )
                     return fig
