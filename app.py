@@ -17,7 +17,7 @@ import plotly.express as px
 ui.page_opts(title="Chinook overview", fillable=True)
 
 from shared import app_dir, artists_data, invoices_data, invoices_full_data, country_top10_data, genre_names_data, \
-    genres_data, sales_genres_data, country_boundaries, orders_by_month_data
+    genres_data, sales_genres_data, country_boundaries, orders_by_month_data, years_data
 
 
 def random_color(feature):
@@ -32,7 +32,7 @@ with ui.sidebar(title="Filters"):
                     remove_button=True)
     ui.input_select("country", "Select Country", invoices_data['Country'].unique().tolist(), multiple=True,
                     remove_button=True)
-    ui.input_select("year", "Select Year", [str(year) for year in range(2009, 2014)], multiple=False)
+    ui.input_select("year", "Select Year", years_data()['Year'].tolist(), multiple=False)
     ui.input_action_button("reset", "Reset filters")
 
 with ui.navset_card_pill(id="tab"):

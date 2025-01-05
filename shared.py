@@ -79,6 +79,12 @@ ORDERS_BY_MONTH_QUERY = """
     ORDER BY InvoiceDate;
 """
 
+YEARS_QUERY = """
+    SELECT DISTINCT strftime('%Y', InvoiceDate) AS Year
+    FROM invoices
+    ORDER BY Year;
+"""
+
 # Funkcja do pobierania danych z bazy danych
 def fetch_data(query):
     with sqlite3.connect(DB_PATH) as conn:
@@ -100,3 +106,5 @@ def sales_genres_data():
 def genre_names_data():
     return fetch_data(GENRE_NAMES_QUERY)
 country_top10_data = fetch_data(COUNTRY_TOP10_QUERY)
+def years_data():
+    return fetch_data(YEARS_QUERY)
