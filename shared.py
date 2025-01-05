@@ -72,6 +72,13 @@ COUNTRY_TOP10_QUERY = """
     LIMIT 5;
 """
 
+ORDERS_BY_MONTH_QUERY = """
+    SELECT strftime('%m-%Y', InvoiceDate) AS MonthYear, COUNT(*) AS PurchaseCount
+    FROM invoices
+    GROUP BY MonthYear
+    ORDER BY InvoiceDate;
+"""
+
 # Funkcja do pobierania danych z bazy danych
 def fetch_data(query):
     with sqlite3.connect(DB_PATH) as conn:
@@ -85,6 +92,7 @@ with open(COUNTRIES_GEO, "r") as f:
 artists_data = fetch_data(ARTISTS_QUERY)
 invoices_data = fetch_data(INVOICES_QUERY)
 invoices_full_data = fetch_data(INVOICES_FULL_QUERY)
+orders_by_month_data = fetch_data(ORDERS_BY_MONTH_QUERY)
 def genres_data():
     return fetch_data(GENRES_QUERY)
 def sales_genres_data():

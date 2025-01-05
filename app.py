@@ -17,7 +17,7 @@ import plotly.express as px
 ui.page_opts(title="Chinook overview", fillable=True)
 
 from shared import app_dir, artists_data, invoices_data, invoices_full_data, country_top10_data, genre_names_data, \
-    genres_data, sales_genres_data, country_boundaries
+    genres_data, sales_genres_data, country_boundaries, orders_by_month_data
 
 
 def random_color(feature):
@@ -88,6 +88,23 @@ with ui.navset_card_pill(id="tab"):
                         x="Country",
                         y="PurchaseCount",
                         labels={"Country": "Country", "PurchaseCount": "purchase"},
+                        text_auto=False,
+
+                    )
+                    return fig
+
+        with ui.layout_columns():
+            with ui.card():
+                ui.card_header("Sales by Month")
+
+
+                @render_plotly
+                def plot_time():
+                    fig = px.histogram(
+                        orders_by_month_data,
+                        x="MonthYear",
+                        y="PurchaseCount",
+                        labels={"MonthYear": "Month-Year", "PurchaseCount": "purchase"},
                         text_auto=False,
 
                     )
