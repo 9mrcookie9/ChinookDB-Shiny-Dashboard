@@ -18,7 +18,7 @@ ui.page_opts(title="Chinook overview", fillable=True)
 
 from shared import genre_names_data, invoices_data, years_data, artists_data, country_top10_data, orders_by_month_data, \
     sales_by_country, sales_revenue_genres_data, top_albums_data, sales_genres_data, genres_data, invoices_full_data, \
-    app_dir
+    app_dir, country_boundaries
 
 
 def random_color(feature):
