@@ -126,6 +126,19 @@ SALES_REVENUE_BY_GENRE_QUERY = """
     ORDER BY Revenue DESC;
 """
 
+ORDERS_BY_MONTH_QUERY = """
+    SELECT strftime('%m-%Y', InvoiceDate) AS MonthYear, COUNT(*) AS PurchaseCount
+    FROM invoices
+    GROUP BY MonthYear
+    ORDER BY InvoiceDate;
+"""
+
+YEARS_QUERY = """
+    SELECT DISTINCT strftime('%Y', InvoiceDate) AS Year
+    FROM invoices
+    ORDER BY Year;
+"""
+
 # Funkcja do pobierania danych z bazy danych
 def fetch_data(query):
     with sqlite3.connect(DB_PATH) as conn:
@@ -139,6 +152,7 @@ with open(COUNTRIES_GEO, "r") as f:
 artists_data = fetch_data(ARTISTS_QUERY)
 invoices_data = fetch_data(INVOICES_QUERY)
 invoices_full_data = fetch_data(INVOICES_FULL_QUERY)
+orders_by_month_data = fetch_data(ORDERS_BY_MONTH_QUERY)
 
 
 def genres_data():
@@ -157,6 +171,8 @@ def genre_names_data():
 
 
 country_top10_data = fetch_data(COUNTRY_TOP10_QUERY)
+def years_data():
+    return fetch_data(YEARS_QUERY)
 
 
 def top_albums_data(country, selected_genres=None):

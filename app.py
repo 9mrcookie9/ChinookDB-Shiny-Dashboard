@@ -16,8 +16,9 @@ from shinywidgets import render_plotly, render_widget
 
 ui.page_opts(title="Chinook overview", fillable=True)
 
-from shared import app_dir, artists_data, invoices_data, invoices_full_data, country_top10_data, genre_names_data, \
-    genres_data, sales_genres_data, country_boundaries, top_albums_data, sales_by_country, sales_revenue_genres_data
+from shared import genre_names_data, invoices_data, years_data, artists_data, country_top10_data, orders_by_month_data, \
+    sales_by_country, sales_revenue_genres_data, top_albums_data, sales_genres_data, genres_data, invoices_full_data, \
+    app_dir
 
 
 def random_color(feature):
@@ -55,6 +56,7 @@ with ui.sidebar(title="Filters"):
                     remove_button=True)
     ui.input_select("country", "Select Country", invoices_data['Country'].unique().tolist(), multiple=True,
                     remove_button=True)
+    ui.input_select("year", "Select Year", years_data()['Year'].tolist(), multiple=False)
     ui.input_action_button("reset", "Reset filters")
 
 with ui.navset_card_pill(id="tab"):
@@ -112,6 +114,25 @@ with ui.navset_card_pill(id="tab"):
                         y="PurchaseCount",
                         labels={"Country": "Country", "PurchaseCount": "purchase"},
                         text_auto=False,
+
+                    )
+                    return fig
+
+        with ui.layout_columns():
+            with ui.card():
+                ui.card_header("Sales by Month")
+
+
+                @render_plotly
+                def plot_time():
+                    selected_year = input.year()
+                    filtered_data = orders_by_month_data[orders_by_month_data['MonthYear'].str.endswith(selected_year)]
+                    fig = px.line(
+                        filtered_data,
+                        x="MonthYear",
+                        y="PurchaseCount",
+                        labels={"MonthYear": "Month-Year", "PurchaseCount": "Sum of purchases"},
+                        markers=False,
 
                     )
                     return fig
