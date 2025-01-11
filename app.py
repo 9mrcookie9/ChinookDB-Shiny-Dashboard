@@ -16,9 +16,9 @@ from shinywidgets import render_plotly, render_widget
 
 ui.page_opts(title="Chinook overview", fillable=True)
 
-from shared import app_dir, artists_data, invoices_data, invoices_full_data, country_top10_data, genre_names_data, \
-    genres_data, sales_genres_data, country_boundaries, top_albums_data, sales_by_country, sales_revenue_genres_data
-    genres_data, sales_genres_data, country_boundaries, orders_by_month_data, years_data
+from shared import genre_names_data, invoices_data, years_data, artists_data, country_top10_data, orders_by_month_data, \
+    sales_by_country, sales_revenue_genres_data, top_albums_data, sales_genres_data, genres_data, invoices_full_data, \
+    app_dir
 
 
 def random_color(feature):
