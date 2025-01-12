@@ -138,11 +138,11 @@ with ui.navset_card_pill(id="tab"):
                     return fig
 
     with ui.nav_panel("Map"):
-        def get_filtered_sales_data(selected_genres, selected_countries, selected_year):
-            filtered_sales_data = sales_by_country(selected_year)
+        def get_filtered_sales_data(selected_genres, selected_countries):
+            filtered_sales_data = sales_by_country()
 
             if selected_genres:
-                genre_sales_data = sales_revenue_genres_data(selected_year)
+                genre_sales_data = sales_revenue_genres_data()
                 filtered_sales_data = genre_sales_data[genre_sales_data['GenreName'].isin(selected_genres)]
                 if selected_countries:
                     filtered_sales_data = filtered_sales_data[filtered_sales_data['Country'].isin(selected_countries)]
@@ -156,6 +156,7 @@ with ui.navset_card_pill(id="tab"):
         def get_sales_range(filtered_sales_data):
             if filtered_sales_data.empty:
                 return 0, 0
+            print(filtered_sales_data['Revenue'])
             return filtered_sales_data['Revenue'].max(), filtered_sales_data['Revenue'].min()
 
 
@@ -168,9 +169,11 @@ with ui.navset_card_pill(id="tab"):
                 caption='Total Sales Count'
             )
 
+
         def get_country_color(country, filtered_sales_data, colormap):
             sales_count = filtered_sales_data[filtered_sales_data['Country'] == country]['Revenue'].values
             return colormap(sales_count[0]) if len(sales_count) > 0 else '#d3d3d3'
+
 
         def create_map(filtered_sales_data, colormap, country_boundaries, selected_genres):
             map = Map(center=(50.2660531, 19.0224004), zoom=3, close_popup_on_click=True)
@@ -201,7 +204,7 @@ with ui.navset_card_pill(id="tab"):
                 country = "USA" if country == "United States of America" else country
                 if filtered_sales_data[filtered_sales_data['Country'] == country].empty:
                     return
-                top_albums = top_albums_data(country, selected_genres, input.year())
+                top_albums = top_albums_data(country, selected_genres)
                 country_revenue = filtered_sales_data[filtered_sales_data['Country'] == country]['Revenue'].sum()
                 album_list = "<br>".join(
                     [f"<b>{row['AlbumTitle']}</b> (${row['Revenue']:.2f} revenue)" for _, row in top_albums.iterrows()]
@@ -232,14 +235,12 @@ with ui.navset_card_pill(id="tab"):
         def map():
             selected_genres = input.genres()
             selected_countries = input.country()
-            selected_year = input.year()
 
-            filtered_sales_data, selected_countries = get_filtered_sales_data(selected_genres, selected_countries, selected_year)
+            filtered_sales_data, selected_countries = get_filtered_sales_data(selected_genres, selected_countries)
             max_sales, min_sales = get_sales_range(filtered_sales_data)
             colormap = create_colormap(min_sales, max_sales)
 
             return create_map(filtered_sales_data, colormap, country_boundaries, selected_genres)
-
     with ui.nav_panel("Data source"):
         with ui.card(full_screen=True):
             ui.card_header("Invoices")
