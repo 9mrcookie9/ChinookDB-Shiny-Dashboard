@@ -88,8 +88,9 @@ SALES_BY_COUNTRY = """
     FROM invoices i
     JOIN customers c ON i.CustomerId = c.CustomerId
     JOIN invoice_items ii ON i.InvoiceId = ii.InvoiceId
+    WHERE ('{year}' IS NULL OR strftime('%Y', i.InvoiceDate) = '{year}')
     GROUP BY c.Country
-    ORDER BY Revenue DESC
+    ORDER BY Revenue DESC;
 """
 
 TOP_THREE_ALBUMS_BY_COUNTRY = """
@@ -99,6 +100,7 @@ TOP_THREE_ALBUMS_BY_COUNTRY = """
     JOIN invoice_items ON tracks.TrackId = invoice_items.TrackId
     JOIN invoices ON invoice_items.InvoiceId = invoices.InvoiceId
     WHERE invoices.BillingCountry = '{country}'
+    AND ('{year}' IS NULL OR strftime('%Y', invoices.InvoiceDate) = '{year}')
     GROUP BY albums.AlbumId
     ORDER BY Revenue DESC
     LIMIT 3;
@@ -112,6 +114,7 @@ TOP_THREE_ALBUMS_BY_GENRE = """
     JOIN invoices ON invoice_items.InvoiceId = invoices.InvoiceId
     JOIN genres ON tracks.GenreId = genres.GenreId
     WHERE invoices.BillingCountry = '{country}' AND genres.Name IN ({genres})
+    AND ('{year}' IS NULL OR strftime('%Y', invoices.InvoiceDate) = '{year}')
     GROUP BY albums.AlbumId
     ORDER BY Revenue DESC
     LIMIT 3;
@@ -122,6 +125,7 @@ SALES_REVENUE_BY_GENRE_QUERY = """
     JOIN tracks ON genres.GenreId = tracks.GenreId
     JOIN invoice_items ON tracks.TrackId = invoice_items.TrackId
     JOIN invoices ON invoice_items.InvoiceId = invoices.InvoiceId
+    WHERE ('{year}' IS NULL OR strftime('%Y', invoices.InvoiceDate) = '{year}')
     GROUP BY BillingCountry, GenreName
     ORDER BY Revenue DESC;
 """
@@ -138,6 +142,7 @@ YEARS_QUERY = """
     FROM invoices
     ORDER BY Year;
 """
+
 
 # Funkcja do pobierania danych z bazy danych
 def fetch_data(query):
@@ -163,25 +168,30 @@ def sales_genres_data():
     return fetch_data(SALES_BY_GENRE_QUERY)
 
 
-def sales_revenue_genres_data():
-    return fetch_data(SALES_REVENUE_BY_GENRE_QUERY)
+def sales_revenue_genres_data(year=None):
+    return fetch_data(SALES_REVENUE_BY_GENRE_QUERY.format(year=year))
+
 
 def genre_names_data():
     return fetch_data(GENRE_NAMES_QUERY)
 
 
 country_top10_data = fetch_data(COUNTRY_TOP10_QUERY)
+
+
 def years_data():
     return fetch_data(YEARS_QUERY)
 
 
-def top_albums_data(country, selected_genres=None):
+def top_albums_data(country, selected_genres=None, year=None):
     if selected_genres:
         genres_str = ', '.join(f"'{genre}'" for genre in selected_genres)
-        query = TOP_THREE_ALBUMS_BY_GENRE.format(country=country, genres=genres_str)
+        query = TOP_THREE_ALBUMS_BY_GENRE.format(country=country, genres=genres_str, year=year)
     else:
-        query = TOP_THREE_ALBUMS_BY_COUNTRY.format(country=country)
+        query = TOP_THREE_ALBUMS_BY_COUNTRY.format(country=country, year=year)
+    print(query)
     return fetch_data(query)
 
-def sales_by_country():
-    return fetch_data(SALES_BY_COUNTRY)
+
+def sales_by_country(year=None):
+    return fetch_data(SALES_BY_COUNTRY.format(year=year))
