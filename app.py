@@ -178,8 +178,8 @@ with ui.navset_card_pill(id="tab"):
         def create_map(filtered_sales_data, colormap, country_boundaries, selected_genres):
             map = Map(center=(50.2660531, 19.0224004), zoom=3, close_popup_on_click=True)
             popup_content = HTML()
-            popup = Popup(child=popup_content, close_button=True, auto_close=True, auto_pan=False,
-                          close_on_escape_key=False)
+            popup = Popup(child=popup_content, location=(100,200), close_button=True,
+                          auto_close=True, auto_pan=False,close_on_escape_key=False)
 
             def style_function(feature):
                 country = feature['properties']['name']
@@ -230,6 +230,7 @@ with ui.navset_card_pill(id="tab"):
             map.add_control(colorbar_control)
 
             return map
+
 
         @render_widget
         def map():
