@@ -10,3 +10,7 @@
 .popover .btn-close {
   filter: var(--bs-btn-close-white-filter);
 }
+
+.card{
+  margin-top: 1rem;
+}

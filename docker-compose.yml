@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PYTHON_VERSION: 3.11
+        UID: 10001
+    image: my-python-app
+    container_name: python_app
+    volumes:
+      - .:/app  # Mounts the current directory into /app in the container
+      - /root/.cache/pip:/root/.cache/pip  # Cache pip dependencies to speed up builds
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+    command: python -m shiny run ./app.py
+    expose:
+      - "8000"  # Internal port for Nginx to communicate with the app
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"  # Expose Nginx on port 80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro  # Mount your Nginx config
+    depends_on:
+      - app
